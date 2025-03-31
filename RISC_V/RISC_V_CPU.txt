@@ -1,0 +1,28 @@
+module RISC_V_CPU (
+    input clk,
+    input [31:0] instr,
+    output [31:0] ALUResult
+);
+    wire [31:0] readData1, readData2;
+    wire [3:0] ALUOp;
+    wire regWrite = 1;
+    
+    RegisterFile rf (
+        .clk(clk),
+        .readReg1(instr[19:15]),
+        .readReg2(instr[24:20]),
+        .writeReg(instr[11:7]),
+        .writeData(ALUResult),
+        .regWrite(regWrite),
+        .readData1(readData1),
+        .readData2(readData2)
+    );
+    
+    ALU alu (
+        .A(readData1),
+        .B(readData2),
+        .ALUOp(instr[14:12]),
+        .Result(ALUResult),
+        .Zero()
+    );
+endmodule

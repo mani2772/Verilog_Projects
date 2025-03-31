@@ -1,0 +1,42 @@
+module RISC_V_CPU_tb;
+    reg clk;
+    reg [31:0] instr;
+    
+    RISC_V_CPU uut (
+        .clk(clk),
+        .instr(instr)
+    );
+    
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+    
+    initial begin
+        uut.rf.registers[1] = 32'd2;
+        uut.rf.registers[2] = 32'd5;
+        
+        $monitor("Time: %0t, ALUOp: %b, R1: %d, R2: %d, ALUResult: %d", 
+                 $time, instr[14:12], uut.rf.registers[1], uut.rf.registers[2], uut.alu.Result);
+        
+        instr = {7'b0000000, 5'd1, 5'd2, 3'b000, 5'd3, 7'b0110011};
+        #10;
+        
+        instr = {7'b0100000, 5'd1, 5'd2, 3'b000, 5'd3, 7'b0110011};
+        #10;
+        
+        instr = {7'b0000000, 5'd1, 5'd2, 3'b111, 5'd3, 7'b0110011};
+        #10;
+        
+        instr = {7'b0000000, 5'd1, 5'd2, 3'b110, 5'd3, 7'b0110011};
+        #10;
+        
+        instr = {7'b0000000, 5'd1, 5'd2, 3'b100, 5'd3, 7'b0110011};
+        #10;
+        
+        instr = {7'b0000000, 5'd1, 5'd2, 3'b101, 5'd3, 7'b0110011};
+        #10;
+        
+        $finish;
+    end
+endmodule
